@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What's Next? — AI in Music</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================
+       WHAT'S NEXT? TIMELINE TEMPLATE — v2
+
+       STUDENTS: This is YOUR starting point. You're expected to
+       make this your own. Change the fonts, colors, layout,
+       animations — whatever serves your topic.
+
+       The structure:
+       - 3 years (2027, 2031, 2036) scroll horizontally
+       - Toggle switches between Optimistic / Most Likely / Pessimistic
+       - Each year has a "deep dive" slot and a "headline" slot
+         depending on the scenario
+
+       YOUR JOB:
+       1. Pick ONE year per scenario row to go deep on
+          (rich media, visuals, embedded content)
+       2. Fill the other two years with headlines + short context
+       3. Make the design reflect your topic
+       4. Make the toggle feel like a real shift — not just a text swap
+       ========================================================== */
+
+    :root {
+      /* -- Customize these to match your topic -- */
+      --color-bg: #0a0a0f;
+      --color-text: #e8e8e8;
+      --color-muted: #888;
+      --color-accent: #4a9eff;
+      --color-optimistic: #2dd4a0;
+      --color-likely: #4a9eff;
+      --color-pessimistic: #ff6b6b;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+
+      /* Active scenario color — set by JS */
+      --color-active: var(--color-likely);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+    }
+
+    /* ---- SCENARIO BACKGROUND OVERLAYS ---- */
+    /* Three fixed gradients that cross-fade as you switch scenarios.
+       Each is a dark base tinged with the scenario accent colour.
+       Adjust opacity and gradient positions to taste. */
+    .bg-tinge {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .bg-tinge.active {
+      opacity: 1;
+    }
+
+    .bg-tinge[data-scenario="optimistic"] {
+      background:
+        radial-gradient(ellipse at 80% 10%, rgba(45, 212, 160, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 90%, rgba(45, 212, 160, 0.08) 0%, transparent 50%);
+    }
+
+    .bg-tinge[data-scenario="likely"] {
+      background:
+        radial-gradient(ellipse at 50% 0%,  rgba(74, 158, 255, 0.16) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 100%, rgba(74, 158, 255, 0.07) 0%, transparent 50%);
+    }
+
+    .bg-tinge[data-scenario="pessimistic"] {
+      background:
+        radial-gradient(ellipse at 20% 15%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 85%, rgba(255, 107, 107, 0.10) 0%, transparent 50%);
+    }
+
+    /* ---- HEADER / TOGGLE ---- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, var(--color-bg) 60%, transparent);
+    }
+
+    .project-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      opacity: 0.7;
+    }
+
+    .team-names {
+      font-size: 0.8rem;
+      opacity: 0.4;
+      margin-top: 0.25rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 0.25rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2rem;
+      padding: 0.25rem;
+    }
+
+    .toggle-btn {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      background: transparent;
+      color: var(--color-muted);
+      transition: all 0.4s ease;
+    }
+
+    .toggle-btn:hover {
+      color: var(--color-text);
+    }
+
+    .toggle-btn.active {
+      background: var(--color-active);
+      color: var(--color-bg);
+    }
+
+    .toggle-btn[data-scenario="optimistic"].active { background: var(--color-optimistic); }
+    .toggle-btn[data-scenario="likely"].active { background: var(--color-likely); }
+    .toggle-btn[data-scenario="pessimistic"].active { background: var(--color-pessimistic); }
+
+    /* ---- VIEW TOGGLE (Timeline / Interview) ---- */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 0.25rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2rem;
+      padding: 0.25rem;
+    }
+
+    .view-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      background: transparent;
+      color: var(--color-muted);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-btn:hover {
+      color: var(--color-text);
+    }
+
+    .view-btn.active {
+      background: rgba(255,255,255,0.12);
+      color: var(--color-text);
+    }
+
+    /* Scenario toggle hides in interview mode */
+    .toggle-group {
+      transition: opacity 0.3s ease;
+    }
+
+    .toggle-group.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ---- HORIZONTAL SCROLL CONTAINER ---- */
+    .timeline {
+      display: flex;
+      height: 100vh;
+      width: 500vw;
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 1;
+      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+      will-change: transform;
+    }
+
+    /* ---- INTRO PANEL ---- */
+    .panel-intro {
+      min-width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem;
+    }
+
+    .panel-intro h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel-intro h1 span {
+      color: var(--color-accent);
+    }
+
+    .panel-intro .subtitle {
+      font-size: 1.2rem;
+      color: var(--color-muted);
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    /* ---- YEAR PANELS ---- */
+    .panel-year {
+      min-width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .year-label {
+      font-family: var(--font-heading);
+      font-size: clamp(6rem, 15vw, 12rem);
+      font-weight: 700;
+      opacity: 0.06;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      color: var(--color-active);
+      transition: color 0.6s ease;
+    }
+
+    .year-header {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-active);
+      margin-bottom: 2rem;
+      transition: color 0.4s ease;
+    }
+
+    /* ---- SCENARIO CONTENT ---- */
+    .scenario-content {
+      position: absolute;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      padding: 6rem 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    /* -- HEADLINE CELL (light content) -- */
+    .cell-headline h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      max-width: 700px;
+    }
+
+    .cell-headline .context {
+      font-size: 1rem;
+      color: var(--color-muted);
+      max-width: 550px;
+      line-height: 1.7;
+    }
+
+    /* -- DEEP DIVE CELL (rich content) -- */
+    .cell-deepdive {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+      max-width: 1100px;
+    }
+
+    .cell-deepdive h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .cell-deepdive .narrative {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-muted);
+    }
+
+    .cell-deepdive .narrative p {
+      margin-bottom: 1rem;
+    }
+
+    .media-slot {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 0.75rem;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .media-slot p {
+      max-width: 250px;
+      line-height: 1.5;
+    }
+
+    /* Embedded media fills the slot */
+    .media-slot img,
+    .media-slot video,
+    .media-slot iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.75rem;
+    }
+
+    .interview-quote {
+      border-left: 3px solid var(--color-active);
+      padding-left: 1.25rem;
+      margin-top: 1.5rem;
+      transition: border-color 0.4s ease;
+    }
+
+    .interview-quote blockquote {
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+
+    .interview-quote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--color-muted);
+    }
+
+    /* ---- CLOSING PANEL ---- */
+    .panel-closing {
+      min-width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem;
+    }
+
+    .panel-closing h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      max-width: 700px;
+      line-height: 1.2;
+    }
+
+    .panel-closing .closing-text {
+      font-size: 1.1rem;
+      color: var(--color-muted);
+      max-width: 550px;
+      line-height: 1.7;
+    }
+
+    /* ---- INTERVIEW SECTION — fixed overlay ---- */
+    .interview-section {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--color-bg);
+      overflow: hidden; /* No scrolling */
+      z-index: 50;
+    }
+
+    .interview-wrapper {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .interview-section.active {
+      display: block;
+    }
+
+    /* Each block snaps to fill the viewport */
+    .interview-block {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      padding: 7rem 6rem 4rem;
+      position: relative;
+    }
+
+    .interview-block + .interview-block {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* -- Person overview block -- */
+    .block-person .block-inner {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .person-photo-slot {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 0.75rem;
+      aspect-ratio: 3 / 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+      font-size: 0.8rem;
+      text-align: center;
+      gap: 0.5rem;
+      padding: 1.5rem;
+    }
+
+    .person-photo-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.75rem;
+    }
+
+    .person-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .person-info .person-role {
+      font-size: 0.9rem;
+      color: var(--color-active);
+      margin-bottom: 1.25rem;
+      transition: color 0.4s ease;
+    }
+
+    .person-info .person-bio {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-muted);
+      max-width: 560px;
+    }
+
+    /* -- Video block -- */
+    .block-video .block-inner {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .video-slot {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 0.75rem;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+      font-size: 0.8rem;
+      text-align: center;
+      gap: 0.5rem;
+      padding: 1.5rem;
+    }
+
+    .video-slot iframe,
+    .video-slot video {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.75rem;
+    }
+
+    .video-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .video-info .video-description {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--color-muted);
+    }
+
+    /* -- Pullquote block -- */
+    .block-pullquote .block-inner {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .block-pullquote blockquote {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--color-active);
+      padding-left: 1.5rem;
+      transition: border-color 0.4s ease;
+    }
+
+    .block-pullquote cite {
+      font-size: 0.9rem;
+      font-style: normal;
+      color: var(--color-muted);
+      padding-left: 1.5rem;
+      display: block;
+    }
+
+    /* Slot label style shared across placeholders */
+    .slot-label {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      margin-bottom: 0.25rem;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .panel-year {
+        padding: 5rem 2rem 3rem;
+      }
+
+      .cell-deepdive {
+        grid-template-columns: 1fr;
+      }
+
+      .interview-block {
+        padding: 6rem 2rem 3rem;
+      }
+
+      .block-person .block-inner,
+      .block-video .block-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .svg-container {
+      width: 100%;
+      height: 100%;
+      min-width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .svg-container svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: visible;
+    }
+  </style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute; visibility:hidden;">
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f2fe" />
+        <stop offset="100%" stop-color="#4facfe" />
+      </linearGradient>
+      <linearGradient id="grad-magenta" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff0844" />
+        <stop offset="100%" stop-color="#ffb199" />
+      </linearGradient>
+      <linearGradient id="grad-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f6d365" />
+        <stop offset="100%" stop-color="#fda085" />
+      </linearGradient>
+      <linearGradient id="grad-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#43e97b" />
+        <stop offset="100%" stop-color="#38f9d7" />
+      </linearGradient>
+      <linearGradient id="grad-crimson" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f85032" />
+        <stop offset="100%" stop-color="#e73827" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- ============================================
+       SCENARIO BACKGROUND OVERLAYS
+       One per scenario, cross-fade on toggle.
+       ============================================ -->
+  <div class="bg-tinge" data-scenario="optimistic"></div>
+  <div class="bg-tinge active" data-scenario="likely"></div>
+  <div class="bg-tinge" data-scenario="pessimistic"></div>
+
+
+  <!-- ============================================
+       HEADER — Toggle between scenarios
+       ============================================ -->
+  <header>
+    <div>
+      <div class="project-title">What's Next? — AI in Music</div>
+      <div class="team-names">Group 3</div>
+    </div>
+    <div class="header-right">
+      <div class="toggle-group" id="yearToggle" style="margin-right: 1rem;">
+        <button class="toggle-btn active" data-panel="1">2027</button>
+        <button class="toggle-btn" data-panel="2">2031</button>
+        <button class="toggle-btn" data-panel="3">2036</button>
+      </div>
+      <div class="toggle-group" id="scenarioToggle">
+        <button class="toggle-btn" data-scenario="optimistic">Optimistic</button>
+        <button class="toggle-btn active" data-scenario="likely">Most Likely</button>
+        <button class="toggle-btn" data-scenario="pessimistic">Pessimistic</button>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="timeline" aria-label="Timeline">
+          <!-- Horizontal timeline: line with 3 milestone dots -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <circle cx="6"  cy="12" r="2.5" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+            <circle cx="18" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </button>
+        <button class="view-btn" data-view="interview" aria-label="Interview">
+          <!-- Person silhouette -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ============================================
+       TIMELINE — Scrolls horizontally
+       ============================================ -->
+  <div class="timeline" id="timeline">
+
+    <!-- ---- INTRO ---- -->
+    <section class="panel-intro" data-panel="0">
+      <h1>The Future of <span>AI in Music</span></h1>
+      <p class="subtitle">
+        A scenario analysis exploring how Artificial Intelligence could reshape
+        the music industry over the next decade.
+      </p>
+    </section>
+
+
+    <!-- ============================================
+         2027
+
+         STUDENTS: Decide which scenario gets the
+         "deep dive" for this year and which two
+         get headlines only. Swap the classes below.
+         ============================================ -->
+    <section class="panel-year" data-panel="1">
+      <div class="year-label">2027</div>
+      <div class="year-header">2027</div>
+
+      <!-- MOST LIKELY — Deep dive -->
+      <div class="scenario-content active" data-scenario="likely">
+        <div class="cell-deepdive">
+          <div>
+            <h2>The AI Flood: Playlists Fill Up, Trust Starts to Fracture</h2>
+            <div class="narrative">
+              <p>
+                Streaming platforms are flooded with AI-generated tracks and synthetic “artists,” some landing real label deals while human musicians struggle for visibility. We are already seeing fully AI-generated personas with AI voices and beats securing massive record deals while real talent is sidelined.
+              </p>
+              <p>
+                By 2027, the most realistic scenario is oversaturation. Generative tools make it trivial to upload thousands of tracks, leading to a brutal landscape for discovery. While this is emotionally demotivating for human creators, it acts as a painful correction where audiences slowly begin to value authenticity again.
+              </p>
+            </div>
+            <div class="interview-quote">
+              <blockquote>"It's highly demotivating to spend three years crafting an album only to hear AI instantly produce something passable... it is a temporary kick in the teeth."</blockquote>
+              <cite>— Ryan, Audio Professional</cite>
+            </div>
+          </div>
+          <div class="media-slot">
+            <div class="svg-container gsap-anim scene-likely-1">
+              <svg viewBox="0 0 200 150" aria-label="Glass Ball Filling and Cracking">
+                <!-- Outer Glass Shell -->
+                <circle cx="100" cy="75" r="50" fill="none" stroke="url(#grad-cyan)" stroke-width="2" opacity="0.8" filter="url(#glow)" class="glass-shell" />
+                
+                <!-- Water Mask & Fill -->
+                <defs>
+                  <clipPath id="ball-clip">
+                    <circle cx="100" cy="75" r="48" />
+                  </clipPath>
+                </defs>
+                <g clip-path="url(#ball-clip)">
+                  <rect x="50" y="125" width="100" height="100" fill="url(#grad-cyan)" opacity="0.7" class="water-fill" />
+                  <path d="M 50 125 Q 75 115 100 125 T 150 125" fill="none" stroke="#fff" stroke-width="2" opacity="0.5" class="water-surface" />
+                </g>
+
+                <!-- Cracks (Hidden initially) -->
+                <g class="cracks" stroke="#fff" stroke-width="1.5" fill="none" opacity="0" filter="url(#glow)">
+                  <path d="M 100 25 L 95 45 L 110 55 L 90 80 L 105 100 L 95 125" />
+                  <path d="M 55 55 L 75 65 L 70 85 L 90 80" />
+                  <path d="M 145 60 L 125 75 L 135 95 L 115 105" />
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESSIMISTIC — Deep dive/Headline cell mapped -->
+      <div class="scenario-content" data-scenario="pessimistic">
+        <div class="cell-deepdive">
+          <div>
+            <h2>Vancouver nightlife is taking a hit, and AI-assisted music demotivates artists</h2>
+            <div class="narrative">
+              <p>
+                Faced with an endless deluge of passable AI-generated content, emerging artists lose the drive to build careers, significantly impacting local, grassroots music scenes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTIMISTIC — Deep dive/Headline mapped -->
+      <div class="scenario-content" data-scenario="optimistic">
+        <div class="cell-deepdive">
+          <div>
+            <h2>A solo artist in a developing country wins the first-ever Grammy using AI</h2>
+            <div class="narrative">
+              <p>
+                AI gives previously under-resourced creators the chance to compete on the global stage. However, human ingenuity has often achieved this boundary-pushing genre fusion without AI already.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         2031
+         ============================================ -->
+    <section class="panel-year" data-panel="2">
+      <div class="year-label">2031</div>
+      <div class="year-header">2031</div>
+
+      <!-- OPTIMISTIC — Deep dive -->
+      <div class="scenario-content" data-scenario="optimistic">
+        <div class="cell-deepdive">
+          <div>
+            <h2>Quarantined AI: Human-Only Spaces Become a Selling Point</h2>
+            <div class="narrative">
+              <p>
+                By 2031, AI music has its own major platforms and clearly labelled sections on streaming apps, while human-only spaces become a premium experience. Listeners, exhausted by years of AI spam, demand transparency.
+              </p>
+              <p>
+                Major services introduce AI labels, filters, and separate tabs for synthetic content. Over time, indie platforms like Bandcamp double down on human-only catalogues as a brand promise, protecting human scenes and artists.
+              </p>
+            </div>
+            <div class="interview-quote">
+              <blockquote>"I want AI to do my taxes so I can do this stuff. Not AI to do this stuff, so I can do my taxes."</blockquote>
+              <cite>— Ryan, Audio Professional</cite>
+            </div>
+          </div>
+          <div class="media-slot">
+            <div class="svg-container gsap-anim scene-opt-2">
+               <svg viewBox="0 0 200 150" aria-label="Human and AI Swap Animation">
+                 <!-- AI Icon -->
+                 <g class="icon-ai" transform-origin="100 75">
+                   <!-- Robot head -->
+                   <rect x="70" y="50" width="60" height="50" rx="8" fill="none" stroke="url(#grad-cyan)" stroke-width="4" filter="url(#glow)" />
+                   <!-- Antennas -->
+                   <line x1="55" y1="75" x2="70" y2="75" stroke="url(#grad-cyan)" stroke-width="4" filter="url(#glow)" />
+                   <line x1="130" y1="75" x2="145" y2="75" stroke="url(#grad-cyan)" stroke-width="4" filter="url(#glow)" />
+                   <!-- Eyes -->
+                   <circle cx="85" cy="65" r="5" fill="url(#grad-cyan)" filter="url(#glow)" />
+                   <circle cx="115" cy="65" r="5" fill="url(#grad-cyan)" filter="url(#glow)" />
+                   <!-- Mouth -->
+                   <line x1="85" y1="85" x2="115" y2="85" stroke="url(#grad-cyan)" stroke-width="3" filter="url(#glow)" />
+                 </g>
+                 <!-- Human Icon -->
+                 <g class="icon-human" transform-origin="100 75">
+                   <circle cx="100" cy="55" r="18" fill="none" stroke="url(#grad-emerald)" stroke-width="4" filter="url(#glow)" />
+                   <path d="M 65 110 C 65 75 135 75 135 110" fill="none" stroke="url(#grad-emerald)" stroke-width="4" stroke-linecap="round" filter="url(#glow)" />
+                 </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOST LIKELY — Deep dive mapped -->
+      <div class="scenario-content active" data-scenario="likely">
+        <div class="cell-deepdive">
+          <div>
+            <h2>AI takes over electronic music, forcing artists into other popular genres</h2>
+            <div class="narrative">
+              <p>
+                While AI improves at generating electronic styles, top-tier electronic artists (like Deadmau5 or Skrillex) will rely heavily on their unique live setups to prevent AI from fully taking over their specific scenes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESSIMISTIC — Deep dive mapped -->
+      <div class="scenario-content" data-scenario="pessimistic">
+        <div class="cell-deepdive">
+         <div>
+            <h2>Music-producing jobs are plummeting due to AI</h2>
+            <div class="narrative">
+              <p>
+                The trend of mass job replacement in production stumbles as the massive energy and processing power required for AI to recycle heavy arrangements proves unsustainable compared to human efficiency.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         2036
+         ============================================ -->
+    <section class="panel-year" data-panel="3">
+      <div class="year-label">2036</div>
+      <div class="year-header">2036</div>
+
+      <!-- PESSIMISTIC — Deep dive -->
+      <div class="scenario-content" data-scenario="pessimistic">
+        <div class="cell-deepdive">
+          <div>
+            <h2>Dead Artists on Tour: When Labels Don’t Tell You They’re Gone</h2>
+            <div class="narrative">
+              <p>
+                In the darkest 2036 scenario, labels quietly continue releasing “new” music and even live-streamed performances from artists who died years earlier, leveraging voice-printing and performance synthesis without disclosure.
+              </p>
+              <p>
+                The technology to clone voices becomes mature and cheap. With obvious economic incentives to maintain infinite releases from catalogue-rich artists, the ethical lines of disclosure and consent are routinely ignored.
+              </p>
+            </div>
+            <div class="interview-quote">
+              <blockquote>"Creating printed voices to hide an artist’s death is freaky... but it is actually going to definitely happen someday."</blockquote>
+              <cite>— Ryan, Audio Professional</cite>
+            </div>
+          </div>
+          <div class="media-slot">
+            <div class="svg-container gsap-anim scene-pess-3">
+              <svg viewBox="0 0 200 150" aria-label="Levitating Ghost">
+                <g class="ghost" filter="url(#glow)">
+                  <!-- Ghost Body -->
+                  <path d="M 70 110 L 70 70 C 70 40 130 40 130 70 L 130 110 L 120 100 L 110 110 L 100 100 L 90 110 L 80 100 Z" fill="none" stroke="url(#grad-cyan)" stroke-width="3" opacity="0.8" />
+                  <!-- Eyes -->
+                  <circle cx="90" cy="65" r="4" fill="url(#grad-cyan)" />
+                  <circle cx="110" cy="65" r="4" fill="url(#grad-cyan)" />
+                  <!-- Mouth -->
+                  <ellipse cx="100" cy="80" rx="4" ry="6" fill="url(#grad-cyan)" />
+                  <!-- Little floating orbs -->
+                  <circle cx="140" cy="40" r="2" fill="url(#grad-cyan)" class="orb" />
+                  <circle cx="50" cy="90" r="3" fill="url(#grad-cyan)" class="orb" />
+                  <circle cx="150" cy="100" r="1.5" fill="url(#grad-cyan)" class="orb" />
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOST LIKELY — Deep dive mapped -->
+      <div class="scenario-content active" data-scenario="likely">
+        <div class="cell-deepdive">
+          <div>
+            <h2>The bell curve is flattening; any artist can improve their chances of success</h2>
+            <div class="narrative">
+              <p>
+                While AI-integrated workflows boost the baseline quality of music, audiences grow deeply skeptical. Fans lose trust in artists who secretly use AI because music remains fundamentally about capturing a singular human moment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTIMISTIC — Deep dive mapped -->
+      <div class="scenario-content" data-scenario="optimistic">
+        <div class="cell-deepdive">
+          <div>
+            <h2>AI gives small artists better resources and increases the chances of making it big</h2>
+            <div class="narrative">
+              <p>
+                Predictive generation allows solo creators to afford massive productions, instantly generating realistic session musicians, like an 8-string heavy metal guitarist, to realize ideas they couldn't otherwise afford.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ---- CLOSING ---- -->
+    <section class="panel-closing" data-panel="4">
+      <h2>Will AI Replace the Artist or Elevate the Master?</h2>
+      <p class="closing-text">
+        As generative models become ubiquitous, the ultimate scarcity won't be high-quality music—it will be human authenticity. Are we building tools to eliminate technical friction, or are we accidentally replacing the very soul of the creative process?
+      </p>
+    </section>
+
+  </div>
+
+
+  <!-- ============================================
+       INTERVIEW SECTION
+
+       STUDENTS: These three blocks are your building
+       blocks. Use all of them, skip some, or reorder
+       them — whatever serves your interview subject.
+       Each block snaps to fill the screen.
+       ============================================ -->
+  <section class="interview-section" id="interviewSection">
+    <div class="interview-wrapper" id="interviewWrapper">
+      <!-- Person overview -->
+      <div class="interview-block block-person">
+        <div class="block-inner">
+          <div class="person-photo-slot">
+            <div class="slot-label">Photo</div>
+            <p>[Image: Ryan in his creative room filled with "knick-knacks and doodads"]</p>
+          </div>
+          <div class="person-info">
+            <h3>Ryan</h3>
+            <p class="person-role">Audio Professional (Sound Designer, Mix & Master Engineer, Composer)</p>
+            <p class="person-bio">
+              Ryan has been working in the music industry for 11 years, diving into audio when he was just 14 years old. As a realist who has spent countless hours on the gruelling, tedious side of audio production—like manually tuning vocal notes—Ryan believes AI should eliminate technical busywork rather than replace the vibrant, creative magic of making art.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video clip -->
+      <div class="interview-block block-video">
+        <div class="block-inner">
+          <div class="video-slot">
+            <div class="slot-label">Video</div>
+            <p>[Video Embed: Key Interview Excerpts]</p>
+          </div>
+          <div class="video-info">
+            <h3>Ryan on the Realities of AI in Audio</h3>
+            <p class="video-description">
+              In this excerpt, Ryan reacts to our decade-long speculative timeline. He cuts through the industry hype to discuss how AI is currently demotivating artists, why humans will never stop playing physical instruments, and why music's core value lies in capturing a singular, evolving human moment.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pullquote -->
+      <div class="interview-block block-pullquote">
+        <div class="block-inner">
+          <blockquote>"Music is such an interesting artwork because it captures a moment. A singular performance that can never be exactly recreated."</blockquote>
+          <cite>— Ryan, Audio Professional</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    // ==========================================================
+    // SCENARIO TOGGLE
+    // Switches visible content and background tinge across all panels.
+    // ==========================================================
+
+    const root = document.documentElement;
+    const scenarioToggleBtns = document.querySelectorAll('#scenarioToggle .toggle-btn');
+    const yearToggleBtns = document.querySelectorAll('#yearToggle .toggle-btn');
+    const bgTinges = document.querySelectorAll('.bg-tinge');
+    const timeline = document.getElementById('timeline');
+    
+    const scenarioColors = {
+      optimistic: '#2dd4a0',
+      likely: '#4a9eff',
+      pessimistic: '#ff6b6b'
+    };
+
+    let currentX = 0; // 0: Intro, 1: 2027, 2: 2031, 3: 2036, 4: Closing
+    let currentY = 0; // 0, 1, 2 depending on the scenario
+    let currentInterviewY = 0; // 0, 1, 2 for interview blocks
+
+    // Initialize 2D Grid DOM
+    document.querySelectorAll('.panel-year').forEach(panel => {
+      const label = panel.querySelector('.year-label');
+      const header = panel.querySelector('.year-header');
+      
+      const scenarios = panel.querySelectorAll('.scenario-content');
+      scenarios.forEach((scen, idx) => {
+        scen.style.top = `${idx * 100}vh`; // Stack vertically
+        
+        // Push labels into each scenario so they maintain position as we scroll
+        if (header) scen.insertBefore(header.cloneNode(true), scen.firstChild);
+        if (label) scen.appendChild(label.cloneNode(true));
+      });
+      
+      if (header) header.remove();
+      if (label) label.remove();
+    });
+
+    function updateGrid() {
+      // 1. Move Timeline container using 2D transform
+      timeline.style.transform = `translate(${-currentX * 100}vw, ${-currentY * 100}vh)`;
+
+      // 2. Update Year Toggles (Top Right)
+      yearToggleBtns.forEach(btn => btn.classList.remove('active'));
+      if (currentX >= 1 && currentX <= 3) {
+        const activeYear = document.querySelector(`#yearToggle .toggle-btn[data-panel="${currentX}"]`);
+        if (activeYear) activeYear.classList.add('active');
+      }
+
+      // 4. Determine Active Scenario Name based on coordinates
+      let sName = 'likely'; // default
+      if (currentX >= 1 && currentX <= 3) {
+        const panel = document.querySelector(`.panel-year[data-panel="${currentX}"]`);
+        if (panel) {
+          const activeScenEl = panel.querySelectorAll('.scenario-content')[currentY];
+          if (activeScenEl && activeScenEl.dataset.scenario) {
+            sName = activeScenEl.dataset.scenario;
+          }
+        }
+      }
+
+      // 5. Apply cosmetic theme updates depending on scenario
+      root.style.setProperty('--color-active', scenarioColors[sName]);
+
+      bgTinges.forEach(el => {
+        el.classList.toggle('active', el.dataset.scenario === sName);
+      });
+
+      scenarioToggleBtns.forEach(b => b.classList.remove('active'));
+      const scBtn = document.querySelector(`#scenarioToggle .toggle-btn[data-scenario="${sName}"]`);
+      if (scBtn) scBtn.classList.add('active');
+
+      if (typeof playScenarioAnimations === 'function') {
+        playScenarioAnimations(sName, currentX);
+      }
+    }
+
+    // Keyboard 2D Grid Navigation
+    document.addEventListener('keydown', (e) => {
+      if (currentView === 'interview') {
+        if (e.key === 'ArrowDown') {
+          if (currentInterviewY < 2) {
+            e.preventDefault();
+            currentInterviewY++;
+            updateInterviewSection();
+          }
+        } else if (e.key === 'ArrowUp') {
+          if (currentInterviewY > 0) {
+            e.preventDefault();
+            currentInterviewY--;
+            updateInterviewSection();
+          }
+        }
+        return;
+      }
+      
+      if (e.key === 'ArrowRight' && currentX < 4) {
+        currentX++;
+        currentY = 0; // Reset vertical layer on horizontal move
+        updateGrid();
+      } else if (e.key === 'ArrowLeft' && currentX > 0) {
+        currentX--;
+        currentY = 0;
+        updateGrid();
+      } else if (e.key === 'ArrowDown' && currentX >= 1 && currentX <= 3) {
+        if (currentY < 2) {
+          e.preventDefault();
+          currentY++;
+          updateGrid();
+        }
+      } else if (e.key === 'ArrowUp' && currentX >= 1 && currentX <= 3) {
+        if (currentY > 0) {
+          e.preventDefault();
+          currentY--;
+          updateGrid();
+        }
+      }
+    });
+
+    function updateInterviewSection() {
+      const wrapper = document.getElementById('interviewWrapper');
+      if (wrapper) {
+        wrapper.style.transform = `translateY(${-currentInterviewY * 100}vh)`;
+      }
+    }
+
+    // Handle Year Dropdown Clicks
+    yearToggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentX = parseInt(btn.dataset.panel);
+        currentY = 0;
+        updateGrid();
+      });
+    });
+
+    // Handle Scenario Toggle Clicks
+    scenarioToggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (currentX >= 1 && currentX <= 3) {
+          const sName = btn.dataset.scenario;
+          const panel = document.querySelector(`.panel-year[data-panel="${currentX}"]`);
+          const scenarios = Array.from(panel.querySelectorAll('.scenario-content'));
+          const targetIndex = scenarios.findIndex(s => s.dataset.scenario === sName);
+          if (targetIndex !== -1) {
+            currentY = targetIndex;
+            updateGrid();
+          }
+        }
+      });
+    });
+
+    // Toggle between Timeline / Interview
+    let currentView = 'timeline';
+    const viewBtns = document.querySelectorAll('.view-btn');
+    const interviewSection = document.getElementById('interviewSection');
+    const scenarioToggle = document.getElementById('scenarioToggle');
+    const yearToggle = document.getElementById('yearToggle');
+
+    viewBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        if (view === currentView) return;
+        currentView = view;
+
+        viewBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (view === 'interview') {
+          interviewSection.classList.add('active');
+          if (scenarioToggle) scenarioToggle.classList.add('hidden');
+          if (yearToggle) yearToggle.classList.add('hidden');
+          currentInterviewY = 0;
+          updateInterviewSection();
+        } else {
+          interviewSection.classList.remove('active');
+          if (scenarioToggle) scenarioToggle.classList.remove('hidden');
+          if (yearToggle) yearToggle.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Force layout update on map initialize
+    updateGrid();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    function playScenarioAnimations(sName, currentX) {
+      if (!window.gsap) return;
+      gsap.killTweensOf(".gsap-anim *");
+      gsap.killTweensOf(".gsap-anim");
+
+      if (currentX === 1) { // 2027
+        if (sName === 'likely') {
+          const tl = gsap.timeline({ repeat: -1 });
+          // Reset state
+          tl.set(".scene-likely-1 .water-fill", { y: 0 });
+          tl.set(".scene-likely-1 .water-surface", { y: 0, opacity: 0 });
+          tl.set(".scene-likely-1 .cracks", { opacity: 0 });
+          tl.set(".scene-likely-1 .glass-shell", { scale: 1, transformOrigin: "50% 50%", opacity: 0.8 });
+
+          // Fill water
+          tl.to(".scene-likely-1 .water-surface", { opacity: 0.5, duration: 0.2 })
+            .to(".scene-likely-1 .water-fill", { y: -100, duration: 3, ease: "power1.inOut" }, "<")
+            .to(".scene-likely-1 .water-surface", { y: -100, duration: 3, ease: "power1.inOut" }, "<")
+            // Surface wobble
+            .to(".scene-likely-1 .water-surface", { x: -5, duration: 0.3, yoyo: true, repeat: 10 }, "-=3")
+            // Pressure buildup
+            .to(".scene-likely-1 .glass-shell", { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1 }, "-=1");
+
+          // Crack & Shatter
+          tl.to(".scene-likely-1 .cracks", { opacity: 1, duration: 0.1 })
+            .to(".scene-likely-1 .glass-shell", { opacity: 0, scale: 1.1, duration: 0.2 }, "+=0.2")
+            .to(".scene-likely-1 .water-fill", { opacity: 0, duration: 0.2 }, "<")
+            .to(".scene-likely-1 .water-surface", { opacity: 0, duration: 0.2 }, "<")
+            .to(".scene-likely-1 .cracks", { opacity: 0, scale: 1.2, transformOrigin: "50% 50%", duration: 0.3 }, "<");
+            
+          // Hold empty state briefly before repeat
+          tl.to({}, { duration: 0.5 });
+
+        } else if (sName === 'pessimistic') {
+           gsap.fromTo(".scene-pess-1 .neon-line", {opacity: 1}, {opacity: 0.1, duration: 0.1, repeat: -1, yoyo: true, repeatDelay: "random(0.1, 1.5)"});
+           gsap.fromTo(".scene-pess-1 .rain", {y: -20, opacity: 0}, {y: 150, opacity: 0.5, duration: 0.8, stagger: 0.1, repeat: -1, ease: "none"});
+        } else if (sName === 'optimistic') {
+           gsap.to(".scene-opt-1 .ring1", {rotation: 360, transformOrigin: "50% 50%", duration: 10, repeat: -1, ease: "none"});
+           gsap.to(".scene-opt-1 .ring2", {rotation: -360, transformOrigin: "50% 50%", duration: 15, repeat: -1, ease: "none"});
+           gsap.to(".scene-opt-1 .core", {scale: 1.3, transformOrigin: "50% 50%", duration: 2, yoyo: true, repeat: -1, ease: "sine.inOut"});
+           gsap.fromTo(".scene-opt-1 .note", {y: 10, opacity: 0}, {y: -30, opacity: 1, duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut"});
+        }
+      } else if (currentX === 2) { // 2031
+        if (sName === 'optimistic') {
+           const tl = gsap.timeline({ repeat: -1 });
+           
+           // Initial state (Human in front, AI in back)
+           tl.set(".scene-opt-2 .icon-human", { x: 0, scale: 1, opacity: 1, y: 0 });
+           tl.set(".scene-opt-2 .icon-ai", { x: 0, scale: 0.6, opacity: 0.3, y: -20 });
+
+           // Human moves to left and back, AI moves to right and front
+           tl.to(".scene-opt-2 .icon-human", { x: -50, scale: 0.8, opacity: 0.6, duration: 1, ease: "power1.inOut" }, 0)
+             .to(".scene-opt-2 .icon-ai", { x: 50, scale: 0.8, opacity: 0.6, duration: 1, ease: "power1.inOut" }, 0)
+             .to(".scene-opt-2 .icon-human", { x: 0, scale: 0.6, opacity: 0.3, y: -20, duration: 1, ease: "power1.inOut" }, 1)
+             .to(".scene-opt-2 .icon-ai", { x: 0, scale: 1, opacity: 1, y: 0, duration: 1, ease: "power1.inOut" }, 1)
+
+             // Little pause
+             .to({}, { duration: 0.8 })
+
+             // AI moves left and back, Human moves right and front
+             .to(".scene-opt-2 .icon-ai", { x: -50, scale: 0.8, opacity: 0.6, duration: 1, ease: "power1.inOut" }, 2.8)
+             .to(".scene-opt-2 .icon-human", { x: 50, scale: 0.8, opacity: 0.6, duration: 1, ease: "power1.inOut" }, 2.8)
+             .to(".scene-opt-2 .icon-ai", { x: 0, scale: 0.6, opacity: 0.3, y: -20, duration: 1, ease: "power1.inOut" }, 3.8)
+             .to(".scene-opt-2 .icon-human", { x: 0, scale: 1, opacity: 1, y: 0, duration: 1, ease: "power1.inOut" }, 3.8)
+
+             // Pause at end
+             .to({}, { duration: 0.8 });
+             
+        } else if (sName === 'likely') {
+           gsap.to(".scene-likely-2 .eq-bar", {height: "random(10, 90)", y: (i,t) => 140 - gsap.getProperty(t, "height"), duration: 0.4, repeat: -1, yoyo: true, stagger: 0.05, ease: "sine.inOut"});
+           gsap.to(".scene-likely-2 .dj", {x: 5, duration: 0.5, yoyo: true, repeat: -1});
+        } else if (sName === 'pessimistic') {
+           gsap.fromTo(".scene-pess-2 .server-led", {opacity: 0}, {opacity: 1, duration: 0.2, repeat: -1, yoyo: true, repeatDelay: "random(0.2, 1.5)"});
+           gsap.fromTo(".scene-pess-2 .graph-line", {strokeDasharray: 300, strokeDashoffset: 300}, {strokeDashoffset: 0, duration: 4, ease: "power2.out"});
+        }
+      } else if (currentX === 3) { // 2036
+        if (sName === 'likely') {
+           gsap.to(".scene-likely-3 .curve", {scaleY: 0.3, transformOrigin: "50% 100%", duration: 3, yoyo: true, repeat: -1, ease: "power2.inOut"});
+           gsap.fromTo(".scene-likely-3 .qmark", {y: 0, opacity: 0.5}, {y: -15, opacity: 1, rotation: "random(-10, 10)", duration: 2, yoyo: true, repeat: -1, stagger: 0.5, ease: "sine.inOut"});
+        } else if (sName === 'optimistic') {
+           gsap.to(".scene-opt-3 .guitar-body", {scale: 1.05, transformOrigin: "50% 50%", duration: 2, yoyo: true, repeat: -1, ease: "sine.inOut"});
+           gsap.to(".scene-opt-3 .string", {scaleY: 1.5, opacity: 0.5, transformOrigin: "50% 50%", duration: 0.1, yoyo: true, repeat: -1, stagger: 0.05});
+           gsap.to(".scene-opt-3 .spark", {x: "random(-60, 60)", y: "random(-30, 30)", scale: "random(0.5, 2.5)", opacity: "random(0.2, 1)", duration: "random(0.5, 1.5)", repeat: -1, yoyo: true, ease: "sine.inOut"});
+        } else if (sName === 'pessimistic') {
+           // Slow levitation for the ghost
+           gsap.fromTo(".scene-pess-3 .ghost", { y: -10 }, { y: 10, duration: 2.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+           // Subtle pulse/drift for the little orbs
+           gsap.fromTo(".scene-pess-3 .orb", { opacity: 0.3, y: 0 }, { opacity: 1, y: -15, duration: "random(1.5, 3)", yoyo: true, repeat: -1, ease: "sine.inOut", stagger: 0.2 });
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
