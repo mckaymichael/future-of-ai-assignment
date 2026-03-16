@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8" fill="currentColor">
-  <rect x="4" y="0" width="1" height="6" />
-  <rect x="5" y="0" width="2" height="1" />
-  <rect x="1" y="5" width="4" height="3" />
-  <rect x="2" y="4" width="2" height="1" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M287-167q-47-47-47-113t47-113q47-47 113-47 23 0 42.5 5.5T480-418v-422h240v160H560v400q0 66-47 113t-113 47q-66 0-113-47Z"/></svg>
