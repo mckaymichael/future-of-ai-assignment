@@ -1441,6 +1441,20 @@
     document.addEventListener('click', startAudio);
     document.addEventListener('keydown', startAudio);
 
+    // Sync Background Audio with Interview Video
+    const interviewVideo = document.querySelector('.video-slot video');
+    if (interviewVideo && audio) {
+      interviewVideo.addEventListener('play', () => {
+        audio.pause();
+      });
+      interviewVideo.addEventListener('pause', () => {
+        audio.play().catch(err => console.log("Audio resume blocked:", err));
+      });
+      interviewVideo.addEventListener('ended', () => {
+        audio.play().catch(err => console.log("Audio resume blocked:", err));
+      });
+    }
+
     // Floating Music Notes Particle System
     function spawnNote() {
       const notes = ['media/music_note.svg', 'media/music_note_2.svg'];
