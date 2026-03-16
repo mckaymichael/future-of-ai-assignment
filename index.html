@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,300..900;1,300..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     /* ==========================================================
        WHAT'S NEXT? TIMELINE TEMPLATE — v2
@@ -690,6 +691,22 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0,0,0,0.15);
       background: var(--color-text);
+    }
+
+    /* Floating Music Notes */
+    .note-particle {
+      position: fixed;
+      bottom: -100px;
+      pointer-events: none;
+      z-index: 9999;
+      color: var(--color-active);
+      opacity: 0.6;
+      transition: opacity 0.33s ease;
+      font-family: 'Material Icons';
+    }
+
+    .note-particle.fading {
+      opacity: 0;
     }
 
     /* -- Video block -- */
@@ -1399,6 +1416,54 @@
     };
     document.addEventListener('click', startAudio);
     document.addEventListener('keydown', startAudio);
+
+    // Floating Music Notes Particle System
+    function spawnNote() {
+      const notes = ['music_note', 'library_music']; // library_music as music_note_2 alternative
+      const note = document.createElement('span');
+      note.className = 'note-particle';
+      note.textContent = notes[Math.floor(Math.random() * notes.length)];
+      
+      const size = Math.floor(Math.random() * (72 - 24 + 1)) + 24;
+      const angle = Math.floor(Math.random() * (60 - (-60) + 1)) + (-60);
+      const lifetime = (Math.random() * (4 - 1) + 1) * 1000;
+      const left = Math.random() * 100;
+      
+      note.style.fontSize = `${size}px`;
+      note.style.left = `${left}vw`;
+      note.style.transform = `rotate(${angle}deg)`;
+      note.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-active');
+      
+      document.body.appendChild(note);
+
+      // Animation: Float up at 100px/s
+      const distance = (lifetime / 1000) * 100;
+      const startTime = performance.now();
+      
+      function animate(time) {
+        const elapsed = time - startTime;
+        if (elapsed >= lifetime) {
+          note.remove();
+          return;
+        }
+
+        // Handle fade out 0.33s before death
+        if (elapsed >= lifetime - 330) {
+          note.classList.add('fading');
+        }
+
+        const y = (elapsed / 1000) * 100;
+        note.style.bottom = `${y - 50}px`;
+        requestAnimationFrame(animate);
+      }
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Spawn notes periodically
+    setInterval(() => {
+      if (document.visibilityState === 'visible') spawnNote();
+    }, 600);
 
     // Force layout update on map initialize
     updateGrid();
