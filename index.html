@@ -102,6 +102,19 @@
       background: linear-gradient(to bottom, var(--color-bg) 60%, transparent);
     }
 
+    header > div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .coffee-icon {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+    }
+
     .project-title {
       font-family: var(--font-heading);
       font-size: 1.1rem;
@@ -873,8 +886,11 @@
        ============================================ -->
   <header>
     <div>
-      <div class="project-title">What's Next? — AI in Music</div>
-      <div class="team-names">Group 3</div>
+      <img src="media/8-Bit Pixel Sticker.gif" alt="Coffee Cup" class="coffee-icon">
+      <div>
+        <div class="project-title">What's Next? — AI in Music</div>
+        <div class="team-names">Group 3</div>
+      </div>
     </div>
     <div class="header-right">
       <div class="toggle-group" id="yearToggle" style="margin-right: 1rem;">
