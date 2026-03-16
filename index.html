@@ -1419,13 +1419,13 @@
 
     // Floating Music Notes Particle System
     function spawnNote() {
-      const notes = ['music_note', 'library_music']; // library_music as music_note_2 alternative
+      const notes = ['music_note', 'music_note_2']; // music_note_2 
       const note = document.createElement('span');
       note.className = 'note-particle';
       note.textContent = notes[Math.floor(Math.random() * notes.length)];
       
       const size = Math.floor(Math.random() * (72 - 24 + 1)) + 24;
-      const angle = Math.floor(Math.random() * (60 - (-60) + 1)) + (-60);
+      const angle = Math.floor(Math.random() * (45 - (-45) + 1)) + (-45);
       const lifetime = (Math.random() * (4 - 1) + 1) * 1000;
       const left = Math.random() * 100;
       
@@ -1436,13 +1436,15 @@
       
       document.body.appendChild(note);
 
-      // Animation: Float up at 100px/s
-      const distance = (lifetime / 1000) * 100;
+      // Animation: Float up at 100px/s with ease-out at 70%
       const startTime = performance.now();
+      const baseSpeed = 100; // px per second
       
       function animate(time) {
         const elapsed = time - startTime;
-        if (elapsed >= lifetime) {
+        const progress = elapsed / lifetime;
+
+        if (progress >= 1) {
           note.remove();
           return;
         }
@@ -1452,7 +1454,26 @@
           note.classList.add('fading');
         }
 
-        const y = (elapsed / 1000) * 100;
+        // Calculate Y position with ease-out after 70% progress
+        let y;
+        const easeStart = 0.7;
+        if (progress < easeStart) {
+          // Linear movement
+          y = (elapsed / 1000) * baseSpeed;
+        } else {
+          // Decelerate (Ease Out)
+          const linearY = (easeStart * lifetime / 1000) * baseSpeed;
+          const remainingTime = (elapsed - (easeStart * lifetime)) / 1000;
+          const totalRemainingTime = ((1 - easeStart) * lifetime) / 1000;
+          
+          // Using a simple quadratic deceleration: distance = v0*t - 0.5*a*t^2
+          // To stop completely at t_total: a = v0 / t_total
+          const v0 = baseSpeed;
+          const a = v0 / totalRemainingTime;
+          const decelY = (v0 * remainingTime) - (0.5 * a * remainingTime * remainingTime);
+          y = linearY + decelY;
+        }
+
         note.style.bottom = `${y - 50}px`;
         requestAnimationFrame(animate);
       }
