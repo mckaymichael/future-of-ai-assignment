@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M287-167q-47-47-47-113t47-113q47-47 113-47 23 0 42.5 5.5T480-418v-422h240v160H560v400q0 66-47 113t-113 47q-66 0-113-47Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Note Head (Pixelated blob) -->
+  <rect x="3" y="12" width="2" height="2" />
+  <rect x="4" y="11" width="3" height="4" />
+  <rect x="5" y="10" width="3" height="4" />
+  <rect x="7" y="11" width="1" height="3" />
+  
+  <!-- Stem -->
+  <rect x="8" y="1" width="1" height="11" />
+  
+  <!-- Flag (As per reference image) -->
+  <rect x="9" y="2" width="1" height="2" />
+  <rect x="10" y="3" width="1" height="2" />
+  <rect x="11" y="4" width="1" height="2" />
+  <rect x="12" y="5" width="1" height="3" />
+  <rect x="13" y="7" width="1" height="3" />
+</svg>

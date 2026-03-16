@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M127-167q-47-47-47-113t47-113q47-47 113-47 23 0 42.5 5.5T320-418v-342l480-80v480q0 66-47 113t-113 47q-66 0-113-47t-47-113q0-66 47-113t113-47q23 0 42.5 5.5T720-498v-165l-320 63v320q0 66-47 113t-113 47q-66 0-113-47Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+  <!-- Left Head -->
+  <rect x="1" y="11" width="3" height="4" />
+  <rect x="2" y="10" width="3" height="4" />
+  <!-- Right Head -->
+  <rect x="9" y="11" width="3" height="4" />
+  <rect x="10" y="10" width="3" height="4" />
+  <!-- Stems -->
+  <rect x="5" y="1" width="1" height="10" />
+  <rect x="13" y="1" width="1" height="10" />
+  <!-- Beam -->
+  <rect x="5" y="1" width="9" height="2" />
+</svg>
