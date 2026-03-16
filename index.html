@@ -348,7 +348,6 @@
       color: var(--color-muted);
       font-size: 0.85rem;
       text-align: center;
-      padding: 2rem;
     }
 
     .media-slot p {
@@ -356,36 +355,46 @@
       line-height: 1.5;
     }
 
-    /* Embedded media fills the slot */
-    .media-slot img,
-    .media-slot video,
-    .media-slot iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 0.75rem;
-    }
-
-    .interview-quote {
-      border-left: 3px solid var(--color-active);
-      padding-left: 1.25rem;
-      margin-top: 1.5rem;
-      transition: border-color 0.4s ease;
-    }
-
-    .interview-quote blockquote {
-      font-size: 1rem;
-      font-style: italic;
-      line-height: 1.6;
-      color: var(--color-text);
-    }
-
-    .interview-quote cite {
+    .cell-deepdive .interview-quote cite {
       display: block;
       margin-top: 0.5rem;
       font-size: 0.85rem;
       font-style: normal;
       color: var(--color-muted);
+    }
+
+    /* -- HERO CELL (Highlight content) -- */
+    .cell-hero {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cell-hero .media-slot {
+      width: 100vw;
+      height: 50vh;
+      margin-left: -6rem; /* Offset the parent padding */
+      margin-top: -6rem;  /* Offset the parent padding */
+      border-radius: 0;
+      border: none;
+    }
+
+    .cell-hero .media-slot img {
+      border-radius: 0;
+    }
+
+    .hero-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      padding-top: 3rem;
+      max-width: 1100px;
+    }
+
+    .hero-content-grid .interview-quote {
+      margin-top: 0;
+      align-self: start;
     }
 
     /* ---- CLOSING PANEL ---- */
@@ -605,6 +614,19 @@
         grid-template-columns: 1fr;
       }
 
+      .cell-hero .media-slot {
+        width: 100vw;
+        height: 40vh;
+        margin-left: -2rem;
+        margin-top: -5rem;
+      }
+
+      .hero-content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding-top: 2rem;
+      }
+
       .interview-block {
         padding: 6rem 2rem 3rem;
       }
@@ -714,24 +736,26 @@
 
       <!-- MOST LIKELY — Deep dive -->
       <div class="scenario-content active" data-scenario="likely">
-        <div class="cell-deepdive">
-          <div>
-            <h2>The AI Flood: Playlists Fill Up, Trust Starts to Fracture</h2>
-            <div class="narrative">
-              <p>
-                Streaming platforms are flooded with AI-generated tracks and synthetic “artists,” some landing real label deals while human musicians struggle for visibility. We are already seeing fully AI-generated personas with AI voices and beats securing massive record deals while real talent is sidelined.
-              </p>
-              <p>
-                By 2027, the most realistic scenario is oversaturation. Generative tools make it trivial to upload thousands of tracks, leading to a brutal landscape for discovery. While this is emotionally demotivating for human creators, it acts as a painful correction where audiences slowly begin to value authenticity again.
-              </p>
+        <div class="cell-hero">
+          <div class="media-slot">
+            <img src="media/ai-generated-top-songs.png" alt="AI Generated Music Flood">
+          </div>
+          <div class="hero-content-grid">
+            <div>
+              <h2>The AI Flood: Playlists Fill Up, Trust Starts to Fracture</h2>
+              <div class="narrative">
+                <p>
+                  Streaming platforms are flooded with AI-generated tracks and synthetic “artists,” some landing real label deals while human musicians struggle for visibility. We are already seeing fully AI-generated personas with AI voices and beats securing massive record deals while real talent is sidelined.
+                </p>
+                <p>
+                  By 2027, the most realistic scenario is oversaturation. Generative tools make it trivial to upload thousands of tracks, leading to a brutal landscape for discovery. While this is emotionally demotivating for human creators, it acts as a painful correction where audiences slowly begin to value authenticity again.
+                </p>
+              </div>
             </div>
             <div class="interview-quote">
               <blockquote>"It's highly demotivating to spend three years crafting an album only to hear AI instantly produce something passable... it is a temporary kick in the teeth."</blockquote>
               <cite>— Ryan, Audio Professional</cite>
             </div>
-          </div>
-          <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -748,7 +772,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/ai-greatest-hits.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -765,7 +789,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/verified-humans-only.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -781,24 +805,26 @@
 
       <!-- OPTIMISTIC — Deep dive -->
       <div class="scenario-content" data-scenario="optimistic">
-        <div class="cell-deepdive">
-          <div>
-            <h2>Quarantined AI: Human-Only Spaces Become a Selling Point</h2>
-            <div class="narrative">
-              <p>
-                By 2031, AI music has its own major platforms and clearly labelled sections on streaming apps, while human-only spaces become a premium experience. Listeners, exhausted by years of AI spam, demand transparency.
-              </p>
-              <p>
-                Major services introduce AI labels, filters, and separate tabs for synthetic content. Over time, indie platforms like Bandcamp double down on human-only catalogues as a brand promise, protecting human scenes and artists.
-              </p>
+        <div class="cell-hero">
+          <div class="media-slot">
+            <img src="media/new-releases-app-ui.png" alt="Human Only Spaces">
+          </div>
+          <div class="hero-content-grid">
+            <div>
+              <h2>Quarantined AI: Human-Only Spaces Become a Selling Point</h2>
+              <div class="narrative">
+                <p>
+                  By 2031, AI music has its own major platforms and clearly labelled sections on streaming apps, while human-only spaces become a premium experience. Listeners, exhausted by years of AI spam, demand transparency.
+                </p>
+                <p>
+                  Major services introduce AI labels, filters, and separate tabs for synthetic content. Over time, indie platforms like Bandcamp double down on human-only catalogues as a brand promise, protecting human scenes and artists.
+                </p>
+              </div>
             </div>
             <div class="interview-quote">
               <blockquote>"I want AI to do my taxes so I can do this stuff. Not AI to do this stuff, so I can do my taxes."</blockquote>
               <cite>— Ryan, Audio Professional</cite>
             </div>
-          </div>
-          <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -815,7 +841,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/life-performance.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -832,7 +858,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/boardroom-meeting.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -848,24 +874,26 @@
 
       <!-- PESSIMISTIC — Deep dive -->
       <div class="scenario-content" data-scenario="pessimistic">
-        <div class="cell-deepdive">
-          <div>
-            <h2>Dead Artists on Tour: When Labels Don’t Tell You They’re Gone</h2>
-            <div class="narrative">
-              <p>
-                In the darkest 2036 scenario, labels quietly continue releasing “new” music and even live-streamed performances from artists who died years earlier, leveraging voice-printing and performance synthesis without disclosure.
-              </p>
-              <p>
-                The technology to clone voices becomes mature and cheap. With obvious economic incentives to maintain infinite releases from catalogue-rich artists, the ethical lines of disclosure and consent are routinely ignored.
-              </p>
+        <div class="cell-hero">
+          <div class="media-slot">
+            <img src="media/mob.png" alt="Dead Artists Touring">
+          </div>
+          <div class="hero-content-grid">
+            <div>
+              <h2>Dead Artists on Tour: When Labels Don’t Tell You They’re Gone</h2>
+              <div class="narrative">
+                <p>
+                  In the darkest 2036 scenario, labels quietly continue releasing “new” music and even live-streamed performances from artists who died years earlier, leveraging voice-printing and performance synthesis without disclosure.
+                </p>
+                <p>
+                  The technology to clone voices becomes mature and cheap. With obvious economic incentives to maintain infinite releases from catalogue-rich artists, the ethical lines of disclosure and consent are routinely ignored.
+                </p>
+              </div>
             </div>
             <div class="interview-quote">
               <blockquote>"Creating printed voices to hide an artist’s death is freaky... but it is actually going to definitely happen someday."</blockquote>
               <cite>— Ryan, Audio Professional</cite>
             </div>
-          </div>
-          <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -882,7 +910,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/ai-concert.png" alt="Ryan">
           </div>
         </div>
       </div>
@@ -899,7 +927,7 @@
             </div>
           </div>
           <div class="media-slot">
-            <img src="media/ryan-portrait.png" alt="Ryan">
+            <img src="media/music-night.png" alt="Ryan">
           </div>
         </div>
       </div>
