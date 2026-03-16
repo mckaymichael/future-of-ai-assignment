@@ -841,6 +841,10 @@
   <div class="bg-tinge active" data-scenario="likely"></div>
   <div class="bg-tinge" data-scenario="pessimistic"></div>
 
+  <audio id="bgAudio" loop preload="auto">
+    <source src="media/Whimsical-log-roll.mp3" type="audio/mpeg">
+  </audio>
+
 
   <!-- ============================================
        HEADER — Toggle between scenarios
@@ -1385,6 +1389,16 @@
         }
       });
     });
+
+    // Audio Autoplay Trigger (Browsers require interaction)
+    const audio = document.getElementById('bgAudio');
+    const startAudio = () => {
+      audio.play().catch(err => console.log("Autoplay blocked:", err));
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('keydown', startAudio);
+    };
+    document.addEventListener('click', startAudio);
+    document.addEventListener('keydown', startAudio);
 
     // Force layout update on map initialize
     updateGrid();
