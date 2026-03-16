@@ -258,16 +258,17 @@
 
     .year-label {
       font-family: var(--font-heading);
-      font-size: clamp(6rem, 15vw, 12rem);
+      font-size: clamp(6rem, 20vw, 15rem);
       font-weight: 700;
-      opacity: 0.06;
+      opacity: 0.04; /* Slightly more faded for the bottom position */
       position: absolute;
-      top: 50%;
+      bottom: -5%; /* Sit at the very bottom, slightly peaking up */
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       pointer-events: none;
       color: var(--color-active);
       transition: color 0.6s ease;
+      z-index: 1; /* Behind content but above tinges */
     }
 
     .year-header {
@@ -519,12 +520,13 @@
 
     .nav-hint {
       font-size: 0.7rem;
-      text-transform: uppercase;
+      text-transform: none;
       letter-spacing: 0.2rem;
       color: var(--color-muted);
       font-weight: 600;
       font-family: var(--font-body);
       opacity: 0.7;
+      text-align: left;
     }
 
     /* ---- INTERVIEW SECTION — fixed overlay ---- */
@@ -836,7 +838,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </div>
         </div>
-        <p class="nav-hint">Use Arrows to Navigate</p>
+        <p class="nav-hint">Use Arrows to Navigate <br> (start with the right arrow)</p>
       </div>
     </section>
 
