@@ -450,6 +450,76 @@
       line-height: 1.7;
     }
 
+    /* ---- NAV GUIDE ---- */
+    .nav-guide {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      opacity: 0;
+      animation: fadeInGuide 1.5s ease-out forwards 1s;
+    }
+
+    @keyframes fadeInGuide {
+      to { opacity: 0.8; }
+    }
+
+    .arrow-container {
+      display: grid;
+      grid-template-areas: 
+        ". up ."
+        "left down right";
+      gap: 0.75rem;
+    }
+
+    .nav-arrow {
+      width: 44px;
+      height: 44px;
+      background: rgba(61, 43, 31, 0.05);
+      border: 1px solid rgba(61, 43, 31, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--color-active);
+      transition: all 0.3s ease;
+    }
+
+    .arrow-up { grid-area: up; --nudge-dir: translateY(-6px); }
+    .arrow-down { grid-area: down; --nudge-dir: translateY(6px); }
+    .arrow-left { grid-area: left; --nudge-dir: translateX(-6px); }
+    .arrow-right { grid-area: right; --nudge-dir: translateX(6px); }
+
+    /* Nudge animations */
+    .nav-arrow {
+      animation: nudgeArrow 3s infinite;
+    }
+
+    .arrow-up { animation-delay: 0s; }
+    .arrow-right { animation-delay: 0.75s; }
+    .arrow-down { animation-delay: 1.5s; }
+    .arrow-left { animation-delay: 2.25s; }
+
+    @keyframes nudgeArrow {
+      0%, 15%, 100% { transform: translate(0, 0); border-color: rgba(61, 43, 31, 0.1); }
+      7% { 
+        transform: var(--nudge-dir);
+        border-color: var(--color-active);
+        background: rgba(61, 43, 31, 0.08);
+      }
+    }
+
+    .nav-hint {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      font-family: var(--font-body);
+    }
+
     /* ---- INTERVIEW SECTION — fixed overlay ---- */
     .interview-section {
       display: none;
@@ -542,10 +612,9 @@
 
     /* -- Video block -- */
     .block-video .block-inner {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 3rem;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
       max-width: 1100px;
       width: 100%;
     }
@@ -563,7 +632,7 @@
       font-size: 0.8rem;
       text-align: center;
       gap: 0.5rem;
-      padding: 1.5rem;
+      padding: 0; /* Remove padding for iframe */
     }
 
     .video-slot iframe,
@@ -744,6 +813,16 @@
         A scenario analysis exploring how Artificial Intelligence could reshape
         the music industry over the next decade.
       </p>
+
+      <div class="nav-guide">
+        <div class="arrow-container">
+          <div class="nav-arrow arrow-up">↑</div>
+          <div class="nav-arrow arrow-left">←</div>
+          <div class="nav-arrow arrow-down">↓</div>
+          <div class="nav-arrow arrow-right">→</div>
+        </div>
+        <p class="nav-hint">Use Arrows to Navigate</p>
+      </div>
     </section>
 
 
@@ -998,8 +1077,11 @@
       <!-- Video clip -->
       <div class="interview-block block-video">
         <div class="block-inner">
-          <div class="media-slot">
-            <img src="media/life-performance.png" alt="Ryan Performing">
+          <div class="video-slot">
+            <video controls width="100%">
+              <source src="media/ryan-interview-clip.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
           </div>
           <div class="video-info">
             <h3>Ryan on the Realities of AI in Audio</h3>
