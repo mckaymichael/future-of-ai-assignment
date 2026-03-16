@@ -227,6 +227,7 @@
       align-items: center;
       text-align: center;
       padding: 4rem;
+      position: relative; /* Base for absolute nav-guide */
     }
 
     .panel-intro h1 {
@@ -452,17 +453,20 @@
 
     /* ---- NAV GUIDE ---- */
     .nav-guide {
-      margin-top: 4rem;
+      position: absolute;
+      bottom: 4rem;
+      left: 4rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 1.2rem;
+      align-items: flex-start;
+      gap: 0.8rem;
       opacity: 0;
-      animation: fadeInGuide 1.5s ease-out forwards 1s;
+      animation: fadeInGuide 1.5s ease-out forwards 1.5s;
+      z-index: 10;
     }
 
     @keyframes fadeInGuide {
-      to { opacity: 0.8; }
+      to { opacity: 1; }
     }
 
     .arrow-container {
@@ -470,54 +474,57 @@
       grid-template-areas: 
         ". up ."
         "left down right";
-      gap: 0.75rem;
+      gap: 0.4rem;
     }
 
     .nav-arrow {
-      width: 44px;
-      height: 44px;
-      background: rgba(61, 43, 31, 0.05);
-      border: 1px solid rgba(61, 43, 31, 0.1);
-      border-radius: 10px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
       color: var(--color-active);
-      transition: all 0.3s ease;
+      opacity: 1;
     }
 
-    .arrow-up { grid-area: up; --nudge-dir: translateY(-6px); }
-    .arrow-down { grid-area: down; --nudge-dir: translateY(6px); }
-    .arrow-left { grid-area: left; --nudge-dir: translateX(-6px); }
-    .arrow-right { grid-area: right; --nudge-dir: translateX(6px); }
+    .arrow-up { grid-area: up; --move-transform: translateY(-12px); }
+    .arrow-down { grid-area: down; --move-transform: translateY(12px); }
+    .arrow-left { grid-area: left; --move-transform: translateX(-12px); }
+    .arrow-right { grid-area: right; --move-transform: translateX(12px); }
 
-    /* Nudge animations */
+    /* Fade-Move sequential animation */
     .nav-arrow {
-      animation: nudgeArrow 3s infinite;
+      animation: fadeMove 4s infinite ease-in-out;
     }
 
     .arrow-up { animation-delay: 0s; }
-    .arrow-right { animation-delay: 0.75s; }
-    .arrow-down { animation-delay: 1.5s; }
-    .arrow-left { animation-delay: 2.25s; }
+    .arrow-right { animation-delay: 1s; }
+    .arrow-down { animation-delay: 2s; }
+    .arrow-left { animation-delay: 3s; }
 
-    @keyframes nudgeArrow {
-      0%, 15%, 100% { transform: translate(0, 0); border-color: rgba(61, 43, 31, 0.1); }
-      7% { 
-        transform: var(--nudge-dir);
-        border-color: var(--color-active);
-        background: rgba(61, 43, 31, 0.08);
+    @keyframes fadeMove {
+      0%, 20%, 100% { 
+        opacity: 1; 
+        transform: translate(0, 0); 
+      }
+      10% { 
+        opacity: 0; 
+        transform: var(--move-transform);
+      }
+      11% {
+        opacity: 0;
+        transform: translate(0, 0);
       }
     }
 
     .nav-hint {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 0.15rem;
+      letter-spacing: 0.2rem;
       color: var(--color-muted);
-      font-weight: 500;
+      font-weight: 600;
       font-family: var(--font-body);
+      opacity: 0.7;
     }
 
     /* ---- INTERVIEW SECTION — fixed overlay ---- */
@@ -816,10 +823,18 @@
 
       <div class="nav-guide">
         <div class="arrow-container">
-          <div class="nav-arrow arrow-up">↑</div>
-          <div class="nav-arrow arrow-left">←</div>
-          <div class="nav-arrow arrow-down">↓</div>
-          <div class="nav-arrow arrow-right">→</div>
+          <div class="nav-arrow arrow-up">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          </div>
+          <div class="nav-arrow arrow-left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+          <div class="nav-arrow arrow-down">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="nav-arrow arrow-right">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
         </div>
         <p class="nav-hint">Use Arrows to Navigate</p>
       </div>
