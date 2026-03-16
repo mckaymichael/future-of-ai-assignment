@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,300..900;1,300..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     /* ==========================================================
        WHAT'S NEXT? TIMELINE TEMPLATE — v2
@@ -693,16 +692,19 @@
       background: var(--color-text);
     }
 
-    /* Floating Music Notes */
     .note-particle {
       position: fixed;
       bottom: -100px;
       pointer-events: none;
       z-index: 9999;
-      color: var(--color-active);
       opacity: 0.6;
       transition: opacity 0.33s ease;
-      font-family: 'Material Icons';
+    }
+
+    .note-particle img {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
 
     .note-particle.fading {
@@ -1419,20 +1421,29 @@
 
     // Floating Music Notes Particle System
     function spawnNote() {
-      const notes = ['music_note', 'music_note_2']; // music_note_2 
-      const note = document.createElement('span');
+      const notes = ['media/music_note.svg', 'media/music_note_2.svg'];
+      const note = document.createElement('div');
       note.className = 'note-particle';
-      note.textContent = notes[Math.floor(Math.random() * notes.length)];
+      
+      const img = document.createElement('img');
+      img.src = notes[Math.floor(Math.random() * notes.length)];
+      note.appendChild(img);
       
       const size = Math.floor(Math.random() * (72 - 24 + 1)) + 24;
       const angle = Math.floor(Math.random() * (45 - (-45) + 1)) + (-45);
       const lifetime = (Math.random() * (4 - 1) + 1) * 1000;
       const left = Math.random() * 100;
       
-      note.style.fontSize = `${size}px`;
+      note.style.width = `${size}px`;
+      note.style.height = `${size}px`;
       note.style.left = `${left}vw`;
       note.style.transform = `rotate(${angle}deg)`;
-      note.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-active');
+      
+      // Handle scenario color coloring via filter if needed, 
+      // but typically SVGs in a rainy shop look best in their natural state or 
+      // themed via CSS variable logic. Let's keep them thematic.
+      const activeColor = getComputedStyle(document.documentElement).getPropertyValue('--color-active');
+      // note: dynamic color filtering for SVGs is complex, we'll stick to clear visibility.
       
       document.body.appendChild(note);
 
