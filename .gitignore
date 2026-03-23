@@ -1,2 +1,20 @@
 # Large Media
 media/ryan-interview-clip.mp4
+
+# dependencies
+node_modules/
+
+# expo
+.expo/
+dist/
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# local env files
+.env*.local
+
+# macos
+.DS_Store
